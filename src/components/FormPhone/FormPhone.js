@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import s from './FormPhone.module.css';
-
+//пример от репеты https://youtu.be/JGzbyfbfo7M?t=793
 class FormPhone extends Component {
   state = {
     name: '',
