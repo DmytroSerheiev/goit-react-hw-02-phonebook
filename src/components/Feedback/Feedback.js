@@ -16,6 +16,35 @@ export class Feedback extends Component {
     bad: 0,
   };
 
+  componentDidMount() {
+    const good = localStorage.getItem('good');
+    const neutral = localStorage.getItem('neutral');
+    const bad = localStorage.getItem('bad');
+    const parseGood = JSON.parse(good);
+    const parseNeutral = JSON.parse(neutral);
+    const parseBad = JSON.parse(bad);
+    if (parseGood && parseNeutral && parseBad) {
+      this.setState({
+        good: parseGood,
+        neutral: parseNeutral,
+        bad: parseBad,
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { good, neutral, bad } = this.state;
+    if (good !== prevState.good) {
+      localStorage.setItem('good', JSON.stringify(good));
+    }
+    if (neutral !== prevState.neutral) {
+      localStorage.setItem('neutral', JSON.stringify(neutral));
+    }
+    if (bad !== prevState.bad) {
+      localStorage.setItem('bad', JSON.stringify(bad));
+    }
+  }
+
   clickHandler = event => {
     const { name } = event.target; //получаем target (сохранённый в локальной переменной name)строик №44  <FeedbackOptions onLeaveFeedback={this.clickHandler} />
     //деструктуризация const { target } = event;
@@ -35,6 +64,16 @@ export class Feedback extends Component {
   countPositiveFeedbackPercentage = () => {
     return Math.round((this.state.good / this.countTotalFeedback()) * 100); // Math.round(num) - возвращает значение числа округлённое до ближайшего целого (состояния good делит на countTotalFeedback и уммнажает на 100) countTotalFeedback и уммнажает на 100
   }; //получаем процент от хороших одзивов
+
+  //метод зброса состаяний на 0👇
+
+  resetState = () => {
+    this.setState({
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    });
+  };
 
   render() {
     const { good, neutral, bad } = this.state;
@@ -62,6 +101,9 @@ export class Feedback extends Component {
               <Notification message="No feedback given" />
             )}
           </Section>
+          <button type="button" onClick={this.resetState}>
+            Reset
+          </button>
         </CardInterface>
       </Layout>
     );
