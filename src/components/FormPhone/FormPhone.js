@@ -1,63 +1,67 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import s from './FormPhone.module.css';
 //пример от репеты https://youtu.be/JGzbyfbfo7M?t=793
-class FormPhone extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+const FormPhone = ({ addContactPhone }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
   //валидация пустого поля до 16 строчки
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    console.log(!this.state.name, !this.state.number);
-    if (!this.state.name || !this.state.number) {
+
+    if (!name || !number) {
       alert('Вы не ввели все контактные данные');
       return;
     }
     //валидация цифры
-    if (Number.isNaN(+this.state.number)) {
+    if (Number.isNaN(+number)) {
       alert('Телефонный номер должен содержать только цифры');
       return;
     }
-    this.props.addContactPhone(this.state);
-    this.setState({
-      name: '',
-      number: '',
-    });
+    addContactPhone(name, number);
+    setName('');
+    setNumber('');
   };
 
-  handleInputChange = e => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
-    this.setState({ [name]: value });
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        return;
+    }
   };
 
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <form className={s.form} onSubmit={this.handleSubmit}>
-        <label>
-          Name
-          <input
-            type="text"
-            name="name"
-            value={name}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <label>
-          Number
-          <input
-            name="number"
-            type="tel"
-            value={number}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <button type="submit">Add contact</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form className={s.form} onSubmit={handleSubmit}>
+      <label>
+        Name
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleInputChange}
+        />
+      </label>
+      <label>
+        Number
+        <input
+          name="number"
+          type="tel"
+          value={number}
+          onChange={handleInputChange}
+        />
+      </label>
+      <button type="submit">Add contact</button>
+    </form>
+  );
+};
 
 export default FormPhone;
